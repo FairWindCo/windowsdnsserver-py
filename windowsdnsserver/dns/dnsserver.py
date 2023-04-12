@@ -2,8 +2,8 @@ import json
 import platform
 from typing import List
 
-from windowsdnsserver.command_runner.runner import Command, CommandRunner
 from windowsdnsserver.command_runner.powershell_runner import PowerShellCommand, PowerShellRunner
+from windowsdnsserver.command_runner.runner import Command, CommandRunner
 from .base import DNSService
 from .record import RecordType, Record
 from ..util import dns_server_utils, logger
@@ -45,16 +45,21 @@ class DnsServerModule(DNSService):
         json_result = json.loads(result.out)
         return dns_server_utils.transform_dns_server_result(zone, json_result)
 
-    def add_a_record(self, zone: str, name: str, ip: str, ttl: str = '1h') -> bool:
+    def add_a_record(self, zone: str, name: str, ip: str, ttl: str = None) -> bool:
         """ uses Add-DnsServerResourceRecordA cmdlet to add a resource in a zone """
+        args = {
+            'ZoneName': zone,
+            'Name': name,
+            'IPv4Address': ip,
+        }
+
+        if ttl:
+            args['TimeToLive'] = dns_server_utils.format_ttl(ttl)
 
         command = PowerShellCommand(
             'Add-DnsServerResourceRecordA',
             'AllowUpdateAny',
-            ZoneName=zone,
-            Name=name,
-            IPv4Address=ip,
-            TimeToLive=dns_server_utils.format_ttl(ttl)
+            *args
         )
 
         result = self.run(command)
@@ -69,6 +74,42 @@ class DnsServerModule(DNSService):
         }
         if name:
             args['Name'] = name
+
+        flags = ['Force']
+
+        command = PowerShellCommand('Remove-DnsServerResourceRecord', *flags, **args)
+        result = self.run(command)
+
+        return result.success
+
+    def add_cname_record(self, zone: str, alias_name: str, server_name: str, ttl: str = None) -> bool:
+        """ uses Add-DnsServerResourceRecordA cmdlet to add a resource in a zone """
+        args = {
+            'ZoneName': zone,
+            'Name': server_name,
+            'HostNameAlias': alias_name,
+        }
+        if ttl:
+            args['TimeToLive'] = dns_server_utils.format_ttl(ttl)
+
+        command = PowerShellCommand(
+            'Add-DnsServerResourceRecordCName',
+            'AllowUpdateAny',
+            **args
+        )
+
+        result = self.run(command)
+        return result.success
+
+    def remove_cname_record(self, zone: str, alias_name: str) -> bool:
+        """ uses Remove-DnsServerResourceRecord cmdlet to remove a record in a zone """
+
+        args = {
+            'ZoneName': zone,
+            'RRType': 'CNAME'
+        }
+        if alias_name:
+            args['Name'] = alias_name
 
         flags = ['Force']
 

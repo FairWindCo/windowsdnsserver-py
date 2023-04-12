@@ -18,6 +18,13 @@ class DNSService(object):
     def remove_a_record(self, zone: str, name: str) -> bool:
         raise MethodNotImplementedError()
 
+    def add_cname_record(self, zone: str, alias_name: str, server_name: str, ttl: str) -> bool:
+        raise MethodNotImplementedError()
+
+    def remove_cname_record(self, zone: str, alias_name: str) -> bool:
+        raise MethodNotImplementedError()
+
+
     def add_txt_record(self, zone: str, name: str, content, ttl: str) -> bool:
         raise MethodNotImplementedError()
 

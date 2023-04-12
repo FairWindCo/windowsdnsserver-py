@@ -4,6 +4,7 @@ from enum import Enum
 class RecordType(Enum):
     A = 'A'
     TXT = 'Txt'
+    CNAME = 'cname'
 
     @staticmethod
     def list():
