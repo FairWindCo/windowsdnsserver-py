@@ -44,9 +44,11 @@ class DnsServerModule(DNSService):
 
         command = PowerShellCommand('Get-DnsServerResourceRecord', **args)
         result = self.run(command)
-
-        json_result = json.loads(result.out)
-        return dns_server_utils.transform_dns_server_result(zone, json_result)
+        if result.success:
+            json_result = json.loads(result.out)
+            return dns_server_utils.transform_dns_server_result(zone, json_result)
+        else:
+            return []
 
     def add_a_record(self, zone: str, name: str, ip: str, ttl: str = None) -> bool:
         """ uses Add-DnsServerResourceRecordA cmdlet to add a resource in a zone """
