@@ -20,7 +20,10 @@ class DnsServerModule(DNSService):
         super().__init__()
 
         assert platform.system() == 'Windows', "DnsServerModule can run only on a Windows Server"
-        self.server = server
+        if server:
+            self.server = server
+        else:
+            self.server = platform.node()
 
 
         if logger is None:
