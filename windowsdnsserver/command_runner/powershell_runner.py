@@ -9,7 +9,7 @@ DEFAULT_POWER_SHELL_EXE_PATH = "C:\Windows\syswow64\WindowsPowerShell\\v1.0\powe
 
 class PowerShellCommand(Command):
 
-    def __init__(self, cmdlet: str, to_json_convert=False, *flags, **args):
+    def __init__(self, cmdlet: str, *flags, to_json_convert=False, **args):
         super().__init__()
 
         self.cmdlet = cmdlet

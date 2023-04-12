@@ -71,6 +71,7 @@ class DnsServerModule(DNSService):
         command = PowerShellCommand(
             'Add-DnsServerResourceRecordA',
             'AllowUpdateAny',
+            to_json_convert=False,
             *args
         )
 
@@ -90,7 +91,7 @@ class DnsServerModule(DNSService):
 
         flags = ['Force']
 
-        command = PowerShellCommand('Remove-DnsServerResourceRecord', *flags, **args)
+        command = PowerShellCommand('Remove-DnsServerResourceRecord', *flags, to_json_convert=False, **args)
         result = self.run(command)
 
         return result.success
@@ -109,6 +110,7 @@ class DnsServerModule(DNSService):
         command = PowerShellCommand(
             'Add-DnsServerResourceRecordCName',
             # 'AllowUpdateAny',
+            to_json_convert=False,
             **args
         )
 
@@ -131,7 +133,7 @@ class DnsServerModule(DNSService):
 
         flags = ['Force']
 
-        command = PowerShellCommand('Remove-DnsServerResourceRecord', *flags, **args)
+        command = PowerShellCommand('Remove-DnsServerResourceRecord', *flags, to_json_convert=False, **args)
         result = self.run(command)
 
         return result.success
@@ -145,6 +147,7 @@ class DnsServerModule(DNSService):
             'Add-DnsServerResourceRecord',
             'AllowUpdateAny',
             'Txt',
+            to_json_convert=False,
             ZoneName=zone,
             Name=name,
             DescriptiveText=content,
