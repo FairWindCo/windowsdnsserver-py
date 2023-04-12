@@ -9,12 +9,13 @@ DEFAULT_POWER_SHELL_EXE_PATH = "C:\Windows\syswow64\WindowsPowerShell\\v1.0\powe
 
 class PowerShellCommand(Command):
 
-    def __init__(self, cmdlet: str, *flags, **args):
+    def __init__(self, cmdlet: str, to_json_convert=False, *flags, **args):
         super().__init__()
 
         self.cmdlet = cmdlet
         self.flags = flags
         self.args = args
+        self.to_json_convert = to_json_convert
 
     def build(self):
         cmd = [self.cmdlet]
@@ -28,8 +29,9 @@ class PowerShellCommand(Command):
             cmd.append('-%s %s' % (arg, value))
 
         # convert to json to make machine readable
-        cmd.append('|')
-        cmd.append('ConvertTo-Json')
+        if self.to_json_convert:
+            cmd.append('|')
+            cmd.append('ConvertTo-Json')
 
         return cmd
 
