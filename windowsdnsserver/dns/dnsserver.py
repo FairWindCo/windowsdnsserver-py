@@ -48,7 +48,7 @@ class DnsServerModule(DNSService):
         if record_type:
             args['RRType'] = record_type.value
 
-        command = PowerShellCommand('Get-DnsServerResourceRecord', **args)
+        command = PowerShellCommand('Get-DnsServerResourceRecord', to_json_convert=True, **args)
         result = self.run(command)
         if result.success:
             json_result = json.loads(result.out)
