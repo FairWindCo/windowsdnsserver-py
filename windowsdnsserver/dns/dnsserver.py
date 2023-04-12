@@ -16,10 +16,12 @@ class DnsServerModule(DNSService):
         https://docs.microsoft.com/en-us/powershell/module/dnsserver/?view=win10-ps
     """
 
-    def __init__(self, runner: CommandRunner = None, logger=None):
+    def __init__(self, runner: CommandRunner = None, logger=None, server=None):
         super().__init__()
 
         assert platform.system() == 'Windows', "DnsServerModule can run only on a Windows Server"
+        self.server = server
+
 
         if logger is None:
             self.logger = logger.create_logger("DnsServer")
@@ -34,7 +36,8 @@ class DnsServerModule(DNSService):
         """ uses Get-DnsServerResourceRecord cmdlet to get records in a zone """
 
         args = {
-            'Zone': zone
+            'ZoneName': zone,
+            'Computer': self.server
         }
 
         if name:
@@ -56,6 +59,7 @@ class DnsServerModule(DNSService):
             'ZoneName': zone,
             'Name': name,
             'IPv4Address': ip,
+            'Computer': self.server,
         }
 
         if ttl:
@@ -75,7 +79,8 @@ class DnsServerModule(DNSService):
 
         args = {
             'ZoneName': zone,
-            'RRType': 'A'
+            'RRType': 'A',
+            'Computer': self.server,
         }
         if name:
             args['Name'] = name
@@ -93,6 +98,7 @@ class DnsServerModule(DNSService):
             'ZoneName': zone,
             'Name': server_name,
             'HostNameAlias': alias_name,
+            'Computer': self.server,
         }
         if ttl:
             args['TimeToLive'] = dns_server_utils.format_ttl(ttl)
@@ -111,7 +117,8 @@ class DnsServerModule(DNSService):
 
         args = {
             'ZoneName': zone,
-            'RRType': 'CNAME'
+            'RRType': 'CNAME',
+            'Computer': self.server,
         }
         if alias_name:
             args['Name'] = alias_name
@@ -147,7 +154,8 @@ class DnsServerModule(DNSService):
 
         args = {
             'ZoneName': zone,
-            'RRType': 'Txt'
+            'RRType': 'Txt',
+            'Computer': self.server,
         }
         if name:
             args['Name'] = name
