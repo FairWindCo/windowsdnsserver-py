@@ -99,8 +99,8 @@ class DnsServerModule(DNSService):
         """ uses Add-DnsServerResourceRecordA cmdlet to add a resource in a zone """
         args = {
             'ZoneName': zone,
-            'Name': server_name,
-            'HostNameAlias': alias_name,
+            'Name': alias_name,
+            'HostNameAlias': f'"{server_name}"',
             'Computer': self.server,
         }
         if ttl:
