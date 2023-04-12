@@ -4,7 +4,6 @@ import sys
 from .runner import Command, CommandRunner, Result
 from ..util import logger
 
-
 DEFAULT_POWER_SHELL_EXE_PATH = "C:\Windows\syswow64\WindowsPowerShell\\v1.0\powershell.exe"
 
 
@@ -37,8 +36,11 @@ class PowerShellCommand(Command):
 
 class PowerShellRunner(CommandRunner):
 
-    def __init__(self, power_shell_path: str = None):
-        self.logger = logger.create_logger("PowerShellRunner")
+    def __init__(self, power_shell_path: str = None, logger=logger):
+        if logger is None:
+            self.logger = logger.create_logger("PowerShellRunner")
+        else:
+            self.logger = logger
 
         self.power_shell_path = power_shell_path
         if power_shell_path is None:
@@ -70,6 +72,3 @@ class PowerShellRunner(CommandRunner):
 
         success = proc.returncode == 0
         return Result(success, proc.returncode, out, err)
-
-
-

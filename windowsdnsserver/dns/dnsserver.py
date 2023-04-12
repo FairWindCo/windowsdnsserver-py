@@ -6,7 +6,7 @@ from windowsdnsserver.command_runner.powershell_runner import PowerShellCommand,
 from windowsdnsserver.command_runner.runner import Command, CommandRunner
 from .base import DNSService
 from .record import RecordType, Record
-from ..util import dns_server_utils, logger
+from ..util import dns_server_utils
 
 
 class DnsServerModule(DNSService):
@@ -21,13 +21,14 @@ class DnsServerModule(DNSService):
 
         assert platform.system() == 'Windows', "DnsServerModule can run only on a Windows Server"
 
-        self.runner = runner
-        if runner is None:
-            self.runner = PowerShellRunner()
         if logger is None:
             self.logger = logger.create_logger("DnsServer")
         else:
             self.logger = logger
+
+        self.runner = runner
+        if runner is None:
+            self.runner = PowerShellRunner(logger=logger)
 
     def get_dns_records(self, zone: str, name: str = None, record_type: RecordType = None) -> List[Record]:
         """ uses Get-DnsServerResourceRecord cmdlet to get records in a zone """
