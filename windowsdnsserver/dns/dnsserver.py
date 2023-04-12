@@ -1,4 +1,5 @@
 import json
+import logging
 import platform
 from typing import List
 
@@ -24,7 +25,6 @@ class DnsServerModule(DNSService):
             self.server = server
         else:
             self.server = platform.node()
-
 
         if logger is None:
             self.logger = logger.create_logger("DnsServer")
@@ -108,11 +108,14 @@ class DnsServerModule(DNSService):
 
         command = PowerShellCommand(
             'Add-DnsServerResourceRecordCName',
-            'AllowUpdateAny',
+            # 'AllowUpdateAny',
             **args
         )
 
         result = self.run(command)
+        if not result.success:
+            logging.error(result.out)
+            logging.error(result.err)
         return result.success
 
     def remove_cname_record(self, zone: str, alias_name: str) -> bool:
