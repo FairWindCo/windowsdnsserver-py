@@ -16,7 +16,7 @@ class DnsServerModule(DNSService):
         https://docs.microsoft.com/en-us/powershell/module/dnsserver/?view=win10-ps
     """
 
-    def __init__(self, runner: CommandRunner = None):
+    def __init__(self, runner: CommandRunner = None, logger=None):
         super().__init__()
 
         assert platform.system() == 'Windows', "DnsServerModule can run only on a Windows Server"
@@ -24,8 +24,10 @@ class DnsServerModule(DNSService):
         self.runner = runner
         if runner is None:
             self.runner = PowerShellRunner()
-
-        self.logger = logger.create_logger("DnsServer")
+        if logger is None:
+            self.logger = logger.create_logger("DnsServer")
+        else:
+            self.logger = logger
 
     def get_dns_records(self, zone: str, name: str = None, record_type: RecordType = None) -> List[Record]:
         """ uses Get-DnsServerResourceRecord cmdlet to get records in a zone """
