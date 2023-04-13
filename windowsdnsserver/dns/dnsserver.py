@@ -3,6 +3,8 @@ import logging
 import platform
 from typing import List
 
+from windowsdnsserver.util import logger
+
 from windowsdnsserver.command_runner.powershell_runner import PowerShellCommand, PowerShellRunner
 from windowsdnsserver.command_runner.runner import Command, CommandRunner
 from .base import DNSService
@@ -17,7 +19,7 @@ class DnsServerModule(DNSService):
         https://docs.microsoft.com/en-us/powershell/module/dnsserver/?view=win10-ps
     """
 
-    def __init__(self, runner: CommandRunner = None, logger=None, server=None):
+    def __init__(self, runner: CommandRunner = None, logger_service=None, server=None):
         super().__init__()
 
         assert platform.system() == 'Windows', "DnsServerModule can run only on a Windows Server"
@@ -26,10 +28,10 @@ class DnsServerModule(DNSService):
         else:
             self.server = platform.node()
 
-        if logger is None:
+        if logger_service is None:
             self.logger = logger.create_logger("DnsServer")
         else:
-            self.logger = logger
+            self.logger = logger_service
 
         self.runner = runner
         if runner is None:

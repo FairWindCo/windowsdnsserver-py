@@ -42,7 +42,7 @@ class PowerShellRunner(CommandRunner):
         if logger is None:
             self.logger = logger.create_logger("PowerShellRunner")
         else:
-            self.logger = logger
+            self.logger = logger_service
 
         self.power_shell_path = power_shell_path
         if power_shell_path is None:
