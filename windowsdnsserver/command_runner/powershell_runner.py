@@ -38,7 +38,7 @@ class PowerShellCommand(Command):
 
 class PowerShellRunner(CommandRunner):
 
-    def __init__(self, power_shell_path: str = None, logger=logger):
+    def __init__(self, power_shell_path: str = None, logger_service=None):
         if logger is None:
             self.logger = logger.create_logger("PowerShellRunner")
         else:
