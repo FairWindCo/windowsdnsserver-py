@@ -3,10 +3,9 @@ import logging
 import platform
 from typing import List
 
-from windowsdnsserver.util import logger
-
 from windowsdnsserver.command_runner.powershell_runner import PowerShellCommand, PowerShellRunner
 from windowsdnsserver.command_runner.runner import Command, CommandRunner
+from windowsdnsserver.util import logger
 from .base import DNSService
 from .record import RecordType, Record
 from ..util import dns_server_utils
@@ -23,10 +22,7 @@ class DnsServerModule(DNSService):
         super().__init__()
 
         assert platform.system() == 'Windows', "DnsServerModule can run only on a Windows Server"
-        if server:
-            self.server = server
-        else:
-            self.server = platform.node()
+        self.server = server
 
         if logger_service is None:
             self.logger = logger.create_logger("DnsServer")
@@ -42,8 +38,10 @@ class DnsServerModule(DNSService):
 
         args = {
             'ZoneName': zone,
-            'Computer': self.server
         }
+
+        if self.server:
+            args['Computer'] = self.server
 
         if name:
             args['Name'] = name
@@ -64,8 +62,10 @@ class DnsServerModule(DNSService):
             'ZoneName': zone,
             'Name': name,
             'IPv4Address': ip,
-            'Computer': self.server,
         }
+
+        if self.server:
+            args['Computer'] = self.server
 
         if ttl:
             args['TimeToLive'] = dns_server_utils.format_ttl(ttl)
@@ -86,8 +86,10 @@ class DnsServerModule(DNSService):
         args = {
             'ZoneName': zone,
             'RRType': 'A',
-            'Computer': self.server,
         }
+        if self.server:
+            args['Computer'] = self.server
+
         if name:
             args['Name'] = name
 
@@ -104,8 +106,10 @@ class DnsServerModule(DNSService):
             'ZoneName': zone,
             'Name': alias_name,
             'HostNameAlias': f'"{server_name}"',
-            'Computer': self.server,
         }
+        if self.server:
+            args['Computer'] = self.server
+
         if ttl:
             args['TimeToLive'] = dns_server_utils.format_ttl(ttl)
 
@@ -128,8 +132,10 @@ class DnsServerModule(DNSService):
         args = {
             'ZoneName': zone,
             'RRType': 'CNAME',
-            'Computer': self.server,
         }
+        if self.server:
+            args['Computer'] = self.server
+
         if alias_name:
             args['Name'] = alias_name
 
@@ -166,8 +172,10 @@ class DnsServerModule(DNSService):
         args = {
             'ZoneName': zone,
             'RRType': 'Txt',
-            'Computer': self.server,
         }
+        if self.server:
+            args['Computer'] = self.server
+
         if name:
             args['Name'] = name
 
