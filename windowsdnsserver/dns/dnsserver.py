@@ -31,7 +31,7 @@ class DnsServerModule(DNSService):
 
         self.runner = runner
         if runner is None:
-            self.runner = PowerShellRunner(logger=logger)
+            self.runner = PowerShellRunner(logger_service=logger)
 
     def get_dns_records(self, zone: str, name: str = None, record_type: RecordType = None) -> List[Record]:
         """ uses Get-DnsServerResourceRecord cmdlet to get records in a zone """
