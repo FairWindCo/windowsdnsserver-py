@@ -1,3 +1,4 @@
+import base64
 import subprocess
 import sys
 
@@ -37,6 +38,7 @@ class PowerShellCommand(Command):
 
 
 class PowerShellRunner(CommandRunner):
+    encode_command = True
 
     def __init__(self, power_shell_path: str = None, logger_service=None):
         if logger is None:
@@ -52,7 +54,11 @@ class PowerShellRunner(CommandRunner):
         assert isinstance(command, PowerShellCommand)
 
         cmd = command.build()
-        cmd.insert(0, self.power_shell_path)
+        if self.encode_command:
+            encoded_command = base64.encodestring(' '.join(cmd).encode()).decode()
+            cmd = (self.power_shell_path, '-encodedCommand', encoded_command)
+        else:
+            cmd.insert(0, self.power_shell_path)
 
         self.logger.debug("Running: [%s]" % ' '.join(cmd))
 
