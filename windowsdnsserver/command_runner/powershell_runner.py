@@ -1,7 +1,6 @@
 import platform
 import subprocess
 import sys
-from base64 import encodestring, encodebytes
 
 from .runner import Command, CommandRunner, Result
 from ..util import logger
@@ -58,8 +57,10 @@ class PowerShellRunner(CommandRunner):
         if self.encode_command:
             (_, ver, _) = platform.python_version_tuple()
             if int(ver) < 11:
+                from base64 import encodestring
                 encoded_command = encodestring(' '.join(cmd).encode()).decode()
             else:
+                from base64 import encodebytes
                 encoded_command = encodebytes(' '.join(cmd).encode()).decode()
             cmd = (self.power_shell_path, '-encodedCommand', encoded_command)
         else:
