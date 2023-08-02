@@ -1,6 +1,6 @@
-import base64
 import subprocess
 import sys
+from base64 import encodestring
 
 from .runner import Command, CommandRunner, Result
 from ..util import logger
@@ -55,7 +55,7 @@ class PowerShellRunner(CommandRunner):
 
         cmd = command.build()
         if self.encode_command:
-            encoded_command = base64.encodestring(' '.join(cmd).encode()).decode()
+            encoded_command = encodestring(' '.join(cmd).encode()).decode()
             cmd = (self.power_shell_path, '-encodedCommand', encoded_command)
         else:
             cmd.insert(0, self.power_shell_path)
