@@ -61,7 +61,12 @@ class PowerShellRunner(CommandRunner):
                 encoded_command = encodestring(' '.join(cmd).encode()).decode()
             else:
                 from base64 import encodebytes
-                encoded_command = encodebytes(' '.join(cmd).encode()).decode()
+                command_string = ' '.join(cmd).encode()
+                buf = bytearray()
+                for comand_byte in command_string:
+                    buf.append(comand_byte)
+                    buf.append(0)
+                encoded_command = encodebytes(buf).decode().replace('\n','')
             cmd = (self.power_shell_path, '-encodedCommand', encoded_command)
         else:
             cmd.insert(0, self.power_shell_path)
