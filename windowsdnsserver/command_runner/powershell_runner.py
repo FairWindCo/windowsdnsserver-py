@@ -41,7 +41,7 @@ class PowerShellRunner(CommandRunner):
     encode_command = True
 
     def __init__(self, power_shell_path: str = None, logger_service=None):
-        if logger is None:
+        if logger_service is None:
             self.logger = logger.create_logger("PowerShellRunner")
         else:
             self.logger = logger_service
